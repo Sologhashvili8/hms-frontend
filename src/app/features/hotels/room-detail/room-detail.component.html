@@ -1,0 +1,49 @@
+@if (hotel(); as hotel) {
+  @if (room(); as room) {
+    <section class="room-detail">
+      <div class="container">
+        <a [routerLink]="['/hotels', hotel.id]" class="back-link">← Back to {{ hotel.name }}</a>
+
+        <div class="room-detail__gallery">
+          @if (room.photoUrls.length > 0) {
+            @for (photo of room.photoUrls; track photo) {
+              <img [src]="photo" [alt]="room.name" />
+            }
+          } @else {
+            <div class="room-detail__placeholder">
+              <span>{{ room.name.charAt(0) }}</span>
+            </div>
+          }
+        </div>
+
+        <div class="room-detail__layout">
+          <div class="room-detail__main">
+            <p class="room-detail__hotel">{{ hotel.name }} · {{ hotel.city }}, {{ hotel.country }}</p>
+            <h1>{{ room.name }}</h1>
+            <p class="room-detail__capacity">Up to {{ room.capacity }} {{ room.capacity === 1 ? 'guest' : 'guests' }}</p>
+
+            @if (room.amenities.length > 0) {
+              <div class="room-detail__amenities">
+                <h2>What this room offers</h2>
+                <ul>
+                  @for (amenity of room.amenities; track amenity) {
+                    <li>✓ {{ amenity }}</li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+
+          <aside class="room-detail__sidebar">
+            <p class="room-detail__price">${{ room.price }}<span>/night</span></p>
+            <app-room-booking-form [hotelId]="hotel.id" [roomId]="room.id" />
+          </aside>
+        </div>
+      </div>
+    </section>
+  }
+} @else if (loading()) {
+  <div class="state">Loading room…</div>
+} @else if (error()) {
+  <div class="state state--error">{{ error() }}</div>
+}

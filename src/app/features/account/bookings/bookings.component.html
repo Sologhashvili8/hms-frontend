@@ -1,0 +1,62 @@
+<h2>My booking</h2>
+
+@if (cancelError()) {
+  <p class="account__state account__state--error">{{ cancelError() }}</p>
+}
+
+@if (loading()) {
+  <p class="account__state">Loading…</p>
+} @else if (error()) {
+  <p class="account__state account__state--error">{{ error() }}</p>
+} @else if (reservations().length === 0) {
+  <p class="account__state">You don't have any bookings yet.</p>
+} @else {
+  <div class="bookings">
+    @for (r of reservations(); track r.id) {
+      <a class="booking-card" [routerLink]="['/hotels', r.hotelId]">
+        <div class="booking-card__media">
+          @if (r.hotelImageUrl) {
+            <img [src]="r.hotelImageUrl" [alt]="r.hotelName" />
+          } @else {
+            <div class="booking-card__placeholder">{{ r.hotelName.charAt(0) }}</div>
+          }
+        </div>
+
+        <div class="booking-card__body">
+          <h3>{{ r.hotelName }}</h3>
+          <p class="booking-card__city">{{ r.hotelCity }}</p>
+          <p class="booking-card__rooms">{{ r.roomNames.join(', ') }}</p>
+          <div class="booking-card__dates">
+            <span>Check-in: {{ r.checkInDate }}</span>
+            <span>Check-out: {{ r.checkOutDate }}</span>
+          </div>
+        </div>
+
+        <div class="booking-card__price">
+          <p>${{ r.totalPrice }}</p>
+          <span>{{ r.nights }} {{ r.nights === 1 ? 'night' : 'nights' }}</span>
+          <button
+            type="button"
+            class="booking-card__cancel"
+            [disabled]="cancelingId() === r.id"
+            (click)="$event.preventDefault(); $event.stopPropagation(); requestCancel(r)"
+          >
+            {{ cancelingId() === r.id ? 'Canceling…' : 'Cancel' }}
+          </button>
+        </div>
+      </a>
+    }
+  </div>
+}
+
+@if (pendingCancel(); as reservation) {
+  <app-confirm-dialog
+    title="Cancel booking"
+    [message]="'Cancel your booking at ' + reservation.hotelName + '?'"
+    confirmLabel="Yes, cancel"
+    cancelLabel="No, keep it"
+    [danger]="true"
+    (confirmed)="confirmCancel()"
+    (dismissed)="dismissCancel()"
+  />
+}

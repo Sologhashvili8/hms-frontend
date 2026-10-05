@@ -1,0 +1,80 @@
+.state {
+  padding: var(--space-xl) 0;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.state--error {
+  color: var(--color-danger);
+}
+
+.hotel-hero {
+  background: var(--gradient-hero);
+  color: #fff;
+  padding: var(--space-lg) 0;
+}
+
+.back-link {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  margin-bottom: var(--space-sm);
+}
+
+.hotel-hero__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.hotel-hero__city {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-accent-light);
+  font-weight: 600;
+}
+
+.hotel-hero__top h1 {
+  font-size: 34px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.hotel-hero__address {
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.hotel-hero__stars {
+  color: var(--color-accent-light);
+  font-size: 20px;
+}
+
+.rooms {
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.rooms h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+}
+
+.rooms__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@media (max-width: 599px) {
+  .hotel-hero__top h1 {
+    font-size: 26px;
+  }
+
+  .rooms {
+    padding: var(--space-lg) 0;
+  }
+}

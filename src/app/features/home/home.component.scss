@@ -1,0 +1,112 @@
+.home-section {
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.home-section__heading {
+  margin-bottom: var(--space-md);
+}
+
+.home-section__heading h2 {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.home-section__heading p {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.home-section__state {
+  padding: var(--space-lg) 0;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.home-section__state--error {
+  color: var(--color-danger);
+}
+
+.home-section__more {
+  display: inline-flex;
+  margin-top: var(--space-md);
+}
+
+.destination-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.destination-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  min-height: 130px;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--gradient-hero);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.destination-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.destination-card__city {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.destination-card__count {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.hotel-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+@media (max-width: 1280px) {
+  .destination-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hotel-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .destination-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hotel-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 599px) {
+  .home-section {
+    padding: var(--space-lg) 0;
+  }
+
+  .destination-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hotel-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,228 @@
+.room-list {
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.room-list__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.room-list__heading h2 {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.room-list__heading p {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.room-list__layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+.room-list__filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  position: sticky;
+  top: 92px;
+  max-height: calc(100vh - 92px - var(--space-lg));
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+
+.filter-block {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-sm);
+}
+
+.filter-block:last-of-type {
+  border-bottom: none;
+}
+
+.filter-block h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+}
+
+.filter-block__empty {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.filter-block__clear {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.sort-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sort-tabs__btn {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.sort-tabs__btn--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.checkbox-row input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--color-primary);
+}
+
+.checkbox-row__stars {
+  color: #f5a623;
+  letter-spacing: 1px;
+}
+
+.checkbox-row__count {
+  margin-left: auto;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.budget__values {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+
+.budget__slider {
+  position: relative;
+  height: 24px;
+}
+
+.budget__track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+.budget__range {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.budget__handle {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 2px solid var(--color-surface);
+  box-shadow: 0 1px 4px rgba(7, 1, 60, 0.3);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  touch-action: none;
+  z-index: 2;
+}
+
+.budget__handle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.room-list__content {
+  min-width: 0;
+}
+
+.room-list__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.room-list__state {
+  padding: var(--space-xl) 0;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.room-list__state--error {
+  color: var(--color-danger);
+}
+
+@media (max-width: 900px) {
+  .room-list__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .room-list__filters {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .room-list__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 599px) {
+  .room-list {
+    padding: var(--space-lg) 0;
+  }
+
+  .room-list__heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .room-list__grid {
+    grid-template-columns: 1fr;
+  }
+}

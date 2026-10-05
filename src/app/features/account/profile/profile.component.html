@@ -1,0 +1,50 @@
+<h2>Profile</h2>
+<p class="account__subtitle">You can edit your profile and information.</p>
+
+@if (loading()) {
+  <p class="account__state">Loading…</p>
+} @else {
+  <form class="account-form" (ngSubmit)="save()">
+    @if (error()) {
+      <p class="account-form__error">{{ error() }}</p>
+    }
+    @if (success()) {
+      <p class="account-form__success">Profile updated.</p>
+    }
+
+    <div class="account-form__row">
+      <label>
+        First name
+        <input type="text" name="firstName" required [(ngModel)]="form.firstName" />
+      </label>
+      <label>
+        Last name
+        <input type="text" name="lastName" required [(ngModel)]="form.lastName" />
+      </label>
+    </div>
+
+    <label>
+      Email
+      <input type="email" [value]="auth.email()" disabled />
+    </label>
+
+    <label>
+      Phone number
+      <input
+        type="text"
+        name="phoneNumber"
+        required
+        inputmode="numeric"
+        maxlength="9"
+        pattern="5\d{8}"
+        title="Starts with 5, 9 digits"
+        placeholder="5XXXXXXXX"
+        [(ngModel)]="form.phoneNumber"
+      />
+    </label>
+
+    <button class="btn btn-primary" type="submit" [disabled]="saving()">
+      {{ saving() ? 'Saving…' : 'Save' }}
+    </button>
+  </form>
+}

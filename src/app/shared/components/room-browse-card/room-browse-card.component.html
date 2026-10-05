@@ -1,0 +1,43 @@
+<article class="room-browse-card">
+  <a class="room-browse-card__media" [routerLink]="['/hotels', room.hotelId, 'rooms', room.id]">
+    @if (room.photoUrls.length > 0) {
+      <img [src]="room.photoUrls[0]" [alt]="room.name" />
+    } @else {
+      <div class="room-browse-card__placeholder">
+        <span>{{ room.name.charAt(0) }}</span>
+      </div>
+    }
+  </a>
+
+  <div class="room-browse-card__body">
+    <p class="room-browse-card__hotel">📍 {{ room.hotelName }}, {{ room.hotelCity }}</p>
+
+    <div class="room-browse-card__heading">
+      <a [routerLink]="['/hotels', room.hotelId, 'rooms', room.id]" class="room-browse-card__title">
+        <h3>{{ room.name }}</h3>
+      </a>
+      <div class="room-browse-card__stars" [attr.aria-label]="room.hotelRating + ' star hotel'">
+        @for (star of stars; track $index) {
+          <span>★</span>
+        }
+      </div>
+    </div>
+
+    <p class="room-browse-card__capacity">Up to {{ room.capacity }} {{ room.capacity === 1 ? 'guest' : 'guests' }}</p>
+
+    @if (room.amenities.length > 0) {
+      <ul class="room-browse-card__amenities">
+        @for (amenity of room.amenities; track amenity) {
+          <li>{{ amenity }}</li>
+        }
+      </ul>
+    }
+
+    <div class="room-browse-card__footer">
+      <p class="room-browse-card__price">${{ room.price }}<span>/night</span></p>
+      <a class="btn btn-primary room-browse-card__cta" [routerLink]="['/hotels', room.hotelId, 'rooms', room.id]">
+        View room
+      </a>
+    </div>
+  </div>
+</article>

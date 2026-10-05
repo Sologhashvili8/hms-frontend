@@ -1,0 +1,47 @@
+@if (error()) {
+  <p class="booking-form__error">{{ error() }}</p>
+}
+
+@if (success()) {
+  <p class="booking-form__success">Booked! Check your reservations for details.</p>
+}
+
+@if (step() === 'dates') {
+  <div class="booking-form">
+    <label>
+      Check-in
+      <input type="date" [min]="minCheckIn" [(ngModel)]="checkInDate" />
+    </label>
+    <label>
+      Check-out
+      <input type="date" [min]="minCheckOut" [(ngModel)]="checkOutDate" />
+    </label>
+    <div class="booking-form__actions">
+      <button class="btn btn-outline" type="button" (click)="cancelBooking()">Cancel</button>
+      <button class="btn btn-primary" type="button" (click)="proceedToPayment()">Continue to payment</button>
+    </div>
+  </div>
+} @else if (step() === 'payment') {
+  <div class="booking-form">
+    <label class="booking-form__full">
+      Card number
+      <input type="text" inputmode="numeric" maxlength="16" placeholder="16 digits" [(ngModel)]="cardNumber" />
+    </label>
+    <label>
+      Phone number
+      <input type="text" inputmode="numeric" maxlength="9" placeholder="5XXXXXXXX" [(ngModel)]="phoneNumber" />
+    </label>
+    <label>
+      Personal number
+      <input type="text" inputmode="numeric" maxlength="11" placeholder="11 digits" [(ngModel)]="personalNumber" />
+    </label>
+    <div class="booking-form__actions">
+      <button class="btn btn-outline" type="button" (click)="backToDates()">Back</button>
+      <button class="btn btn-primary" type="button" [disabled]="submitting()" (click)="confirmBooking()">
+        {{ submitting() ? 'Processing…' : 'Pay & confirm booking' }}
+      </button>
+    </div>
+  </div>
+} @else {
+  <button class="btn btn-primary booking-form__cta" type="button" (click)="openBooking()">Book this room</button>
+}

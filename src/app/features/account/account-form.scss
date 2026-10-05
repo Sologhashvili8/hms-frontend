@@ -1,0 +1,89 @@
+h2 {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.account__subtitle {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin: 6px 0 var(--space-md);
+}
+
+.account__state {
+  padding: var(--space-lg) 0;
+  color: var(--color-text-muted);
+}
+
+.account__state--error {
+  color: var(--color-danger);
+}
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-width: 480px;
+}
+
+.account-form__error {
+  background: rgba(214, 69, 69, 0.1);
+  color: var(--color-danger);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.account-form__success {
+  background: rgba(46, 160, 90, 0.1);
+  color: #2ea05a;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.account-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.account-form input {
+  height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  padding: 0 12px;
+  font-size: 15px;
+  color: var(--color-text);
+}
+
+.account-form input:disabled {
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+}
+
+.account-form input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.account-form__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-sm);
+}
+
+.account-form .btn {
+  align-self: flex-start;
+  height: 44px;
+  padding: 0 24px;
+  margin-top: 8px;
+}
+
+@media (max-width: 480px) {
+  .account-form__row {
+    grid-template-columns: 1fr;
+  }
+}

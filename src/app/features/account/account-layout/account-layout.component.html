@@ -1,0 +1,16 @@
+<section class="container account">
+  <aside class="account__sidebar">
+    <div class="account__avatar">{{ (firstName() || auth.email() || '?').charAt(0).toUpperCase() }}</div>
+    <p class="account__name">{{ firstName() || auth.email() }}</p>
+
+    <nav class="account__nav">
+      <a routerLink="/account/profile" routerLinkActive="is-active">Profile</a>
+      <a routerLink="/account/bookings" routerLinkActive="is-active">My booking</a>
+      <a routerLink="/account/settings" routerLinkActive="is-active">Settings</a>
+    </nav>
+  </aside>
+
+  <div class="account__content">
+    <router-outlet />
+  </div>
+</section>

@@ -1,0 +1,27 @@
+<article class="hotel-card">
+  <div class="hotel-card__media">
+    @if (hotel.imageUrl) {
+      <img [src]="hotel.imageUrl" [alt]="hotel.name" />
+    } @else {
+      <div class="hotel-card__placeholder">
+        <span>{{ hotel.name.charAt(0) }}</span>
+      </div>
+    }
+    <span class="hotel-card__city">{{ hotel.city }}</span>
+  </div>
+
+  <div class="hotel-card__body">
+    <div class="hotel-card__heading">
+      <h3>{{ hotel.name }}</h3>
+      <div class="hotel-card__stars" [attr.aria-label]="hotel.rating + ' star rating'">
+        @for (star of stars; track star) {
+          <span>★</span>
+        }
+      </div>
+    </div>
+
+    <p class="hotel-card__address">{{ hotel.address }}, {{ hotel.country }}</p>
+
+    <a class="btn btn-primary hotel-card__cta" [routerLink]="['/hotels', hotel.id]">View rooms</a>
+  </div>
+</article>

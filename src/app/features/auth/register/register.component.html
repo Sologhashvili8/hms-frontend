@@ -1,0 +1,74 @@
+<section class="auth">
+  <div class="auth__panel">
+    <form class="auth__card" (ngSubmit)="submit()">
+      <h1>Create your account</h1>
+      <p class="auth__subtitle">Sign up to book rooms across Georgia.</p>
+
+      @if (error()) {
+        <p class="auth__error">{{ error() }}</p>
+      }
+
+      <div class="auth__row">
+        <label>
+          First name
+          <input type="text" name="firstName" required [(ngModel)]="form.firstName" />
+        </label>
+        <label>
+          Last name
+          <input type="text" name="lastName" required [(ngModel)]="form.lastName" />
+        </label>
+      </div>
+
+      <label>
+        Email
+        <input type="email" name="email" required [(ngModel)]="form.email" placeholder="name@example.com" />
+      </label>
+
+      <label>
+        Password
+        <input type="password" name="password" required minlength="6" [(ngModel)]="form.password" />
+      </label>
+
+      <div class="auth__row">
+        <label>
+          Personal number
+          <input
+            type="text"
+            name="personalNumber"
+            required
+            inputmode="numeric"
+            maxlength="11"
+            pattern="\d{11}"
+            title="11 digits"
+            placeholder="11 digits"
+            [(ngModel)]="form.personalNumber"
+          />
+        </label>
+        <label>
+          Phone number
+          <input
+            type="text"
+            name="phoneNumber"
+            required
+            inputmode="numeric"
+            maxlength="9"
+            pattern="5\d{8}"
+            title="Starts with 5, 9 digits"
+            placeholder="5XXXXXXXX"
+            [(ngModel)]="form.phoneNumber"
+          />
+        </label>
+      </div>
+
+      <button class="btn btn-primary auth__submit" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Creating account…' : 'Sign up' }}
+      </button>
+
+      <p class="auth__switch">Already have an account? <a routerLink="/login">Log in</a></p>
+
+      <app-social-login-row label="Log in with" />
+    </form>
+  </div>
+
+  <aside class="auth__visual" [style.background-image]="heroPhoto() ? 'url(' + heroPhoto() + ')' : null"></aside>
+</section>

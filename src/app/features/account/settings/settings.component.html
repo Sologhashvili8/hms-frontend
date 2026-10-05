@@ -1,0 +1,53 @@
+<h2>Settings</h2>
+<p class="account__subtitle">Change your password.</p>
+
+<form class="account-form" (ngSubmit)="changePassword()">
+  @if (error()) {
+    <p class="account-form__error">{{ error() }}</p>
+  }
+  @if (success()) {
+    <p class="account-form__success">Password changed.</p>
+  }
+  @if (info()) {
+    <p class="account-form__success">{{ info() }}</p>
+  }
+
+  <label>
+    Current password
+    <input type="password" name="currentPassword" required [(ngModel)]="currentPassword" />
+  </label>
+
+  <label>
+    Code from email
+    <input
+      type="text"
+      name="code"
+      required
+      inputmode="numeric"
+      maxlength="6"
+      pattern="\d{6}"
+      title="6 digits"
+      autocomplete="one-time-code"
+      placeholder="6-digit code"
+      [(ngModel)]="code"
+    />
+  </label>
+
+  <button class="btn" type="button" [disabled]="sending()" (click)="sendCode()">
+    {{ sending() ? 'Sending…' : 'Send code to my email' }}
+  </button>
+
+  <label>
+    New password
+    <input type="password" name="newPassword" required minlength="6" [(ngModel)]="newPassword" />
+  </label>
+
+  <label>
+    Confirm new password
+    <input type="password" name="confirmPassword" required minlength="6" [(ngModel)]="confirmPassword" />
+  </label>
+
+  <button class="btn btn-primary" type="submit" [disabled]="saving()">
+    {{ saving() ? 'Changing…' : 'Change password' }}
+  </button>
+</form>

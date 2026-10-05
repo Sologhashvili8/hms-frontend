@@ -1,0 +1,34 @@
+<section class="auth">
+  <div class="auth__panel">
+    <form class="auth__card" (ngSubmit)="submit()">
+      <h1>Log in</h1>
+      <p class="auth__subtitle">Welcome back to BookNRest.</p>
+
+      @if (error()) {
+        <p class="auth__error">{{ error() }}</p>
+      }
+
+      <label>
+        Email
+        <input type="email" name="email" required [(ngModel)]="email" placeholder="name@example.com" />
+      </label>
+
+      <label>
+        Password
+        <input type="password" name="password" required [(ngModel)]="password" placeholder="••••••••" />
+      </label>
+
+      <a routerLink="/forgot-password" class="auth__forgot">Forget Password?</a>
+
+      <button class="btn btn-primary auth__submit" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Logging in…' : 'Log in' }}
+      </button>
+
+      <p class="auth__switch">Don't have an account? <a routerLink="/register">Sign up</a></p>
+
+      <app-social-login-row label="Log in with" />
+    </form>
+  </div>
+
+  <aside class="auth__visual" [style.background-image]="heroPhoto() ? 'url(' + heroPhoto() + ')' : null"></aside>
+</section>

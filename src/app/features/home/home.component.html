@@ -1,0 +1,52 @@
+<app-hero (search)="onSearch($event)" />
+
+<section class="container home-section">
+  <div class="home-section__heading">
+    <h2>Explore hotels by destination</h2>
+    <p>Real hotels across Georgia, grouped by where you want to go.</p>
+  </div>
+
+  @if (loading()) {
+    <div class="home-section__state">Loading destinations…</div>
+  } @else if (error()) {
+    <div class="home-section__state home-section__state--error">{{ error() }}</div>
+  } @else {
+    <div class="destination-grid">
+      @for (dest of destinations(); track dest.city) {
+        <a
+          class="destination-card"
+          [class.destination-card--photo]="dest.imageUrl"
+          [style.background-image]="dest.imageUrl ? 'linear-gradient(0deg, rgba(7,1,60,0.55), rgba(7,1,60,0.1)), url(' + dest.imageUrl + ')' : null"
+          [routerLink]="['/rooms']"
+          [queryParams]="{ city: dest.city }"
+        >
+          <span class="destination-card__city">{{ dest.city }}</span>
+          <span class="destination-card__count">
+            {{ dest.hotelCount }} {{ dest.hotelCount === 1 ? 'hotel' : 'hotels' }}
+          </span>
+        </a>
+      }
+    </div>
+  }
+</section>
+
+<section class="container home-section">
+  <div class="home-section__heading">
+    <h2>Hotels recommended for you</h2>
+    <p>Our highest-rated stays, hand-picked from real availability.</p>
+  </div>
+
+  @if (loading()) {
+    <div class="home-section__state">Loading hotels…</div>
+  } @else if (error()) {
+    <div class="home-section__state home-section__state--error">{{ error() }}</div>
+  } @else {
+    <div class="hotel-grid">
+      @for (hotel of recommendedHotels(); track hotel.id) {
+        <app-hotel-card [hotel]="hotel" />
+      }
+    </div>
+
+    <a class="btn btn-outline home-section__more" routerLink="/rooms">Browse all rooms →</a>
+  }
+</section>

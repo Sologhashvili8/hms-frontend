@@ -1,0 +1,168 @@
+<section class="container room-list">
+  <div class="room-list__heading">
+    <h2>Rooms in Georgia</h2>
+    <p>{{ filteredRooms().length }} {{ filteredRooms().length === 1 ? 'room' : 'rooms' }} found</p>
+  </div>
+
+  <div class="room-list__layout">
+    <aside class="room-list__filters">
+      <div class="filter-block">
+        <div class="filter-block__heading">
+          <h3>Sort by</h3>
+        </div>
+        <div class="sort-tabs">
+          <button
+            type="button"
+            class="sort-tabs__btn"
+            [class.sort-tabs__btn--active]="sort() === 'rating-desc'"
+            (click)="setSort('rating-desc')"
+          >
+            Properties
+          </button>
+          <button
+            type="button"
+            class="sort-tabs__btn"
+            [class.sort-tabs__btn--active]="sort() === 'price-asc'"
+            (click)="setSort('price-asc')"
+          >
+            Room
+          </button>
+          <button
+            type="button"
+            class="sort-tabs__btn"
+            [class.sort-tabs__btn--active]="sort() === 'city-asc'"
+            (click)="setSort('city-asc')"
+          >
+            Location
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <h3>Hotels</h3>
+        @if (hotelOptions().length > 0) {
+          @for (option of hotelOptions(); track option.hotelId) {
+            <label class="checkbox-row">
+              <input
+                type="checkbox"
+                [checked]="hotelFilters().has(option.hotelId)"
+                (change)="toggleHotel(option.hotelId)"
+              />
+              <span>{{ option.hotelName }}</span>
+              <span class="checkbox-row__count">{{ option.count }}</span>
+            </label>
+          }
+        } @else {
+          <p class="filter-block__empty">Loading hotels…</p>
+        }
+      </div>
+
+      <div class="filter-block">
+        <h3>Budget</h3>
+        @if (priceBounds().max > 0) {
+          <div class="budget">
+            <div class="budget__values">
+              <span>${{ budgetMin() }}</span>
+              <span>${{ budgetMax() }}</span>
+            </div>
+            <div class="budget__slider" #budgetSlider>
+              <div class="budget__track"></div>
+              <div
+                class="budget__range"
+                [style.left.%]="minHandlePercent()"
+                [style.right.%]="100 - maxHandlePercent()"
+              ></div>
+              <div
+                class="budget__handle"
+                tabindex="0"
+                role="slider"
+                aria-label="Minimum budget"
+                [attr.aria-valuemin]="priceBounds().min"
+                [attr.aria-valuemax]="budgetMax()"
+                [attr.aria-valuenow]="budgetMin()"
+                [style.left.%]="minHandlePercent()"
+                (pointerdown)="onHandlePointerDown('min', $event, budgetSlider)"
+                (pointermove)="onHandlePointerMove($event)"
+                (pointerup)="onHandlePointerUp()"
+                (keydown)="onHandleKeydown('min', $event)"
+              ></div>
+              <div
+                class="budget__handle"
+                tabindex="0"
+                role="slider"
+                aria-label="Maximum budget"
+                [attr.aria-valuemin]="budgetMin()"
+                [attr.aria-valuemax]="priceBounds().max"
+                [attr.aria-valuenow]="budgetMax()"
+                [style.left.%]="maxHandlePercent()"
+                (pointerdown)="onHandlePointerDown('max', $event, budgetSlider)"
+                (pointermove)="onHandlePointerMove($event)"
+                (pointerup)="onHandlePointerUp()"
+                (keydown)="onHandleKeydown('max', $event)"
+              ></div>
+            </div>
+          </div>
+        } @else {
+          <p class="filter-block__empty">Loading prices…</p>
+        }
+      </div>
+
+      <div class="filter-block">
+        <h3>Hotel Star Rating</h3>
+        @for (option of starOptions(); track option.stars) {
+          <label class="checkbox-row">
+            <input
+              type="checkbox"
+              [checked]="starFilters().has(option.stars)"
+              (change)="toggleStar(option.stars)"
+            />
+            <span class="checkbox-row__stars">
+              @for (i of option.filled; track $index) {
+                ★
+              }
+            </span>
+            <span class="checkbox-row__count">{{ option.count }}</span>
+          </label>
+        }
+      </div>
+
+      <div class="filter-block">
+        <h3>Amenities</h3>
+        @if (availableAmenities().length > 0) {
+          @for (amenity of availableAmenities(); track amenity) {
+            <label class="checkbox-row">
+              <input
+                type="checkbox"
+                [checked]="amenityFilters().has(amenity)"
+                (change)="toggleAmenity(amenity)"
+              />
+              <span>{{ amenity }}</span>
+            </label>
+          }
+        } @else {
+          <p class="filter-block__empty">Loading amenities…</p>
+        }
+      </div>
+
+      @if (starFilters().size > 0 || amenityFilters().size > 0 || hotelFilters().size > 0) {
+        <button type="button" class="filter-block__clear" (click)="clearFilters()">Clear filters</button>
+      }
+    </aside>
+
+    <div class="room-list__content">
+      @if (loading()) {
+        <div class="room-list__state">Loading rooms…</div>
+      } @else if (error()) {
+        <div class="room-list__state room-list__state--error">{{ error() }}</div>
+      } @else if (filteredRooms().length === 0) {
+        <div class="room-list__state">No rooms match your filters.</div>
+      } @else {
+        <div class="room-list__grid">
+          @for (room of filteredRooms(); track room.id) {
+            <app-room-browse-card [room]="room" />
+          }
+        </div>
+      }
+    </div>
+  </div>
+</section>
