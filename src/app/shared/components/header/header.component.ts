@@ -1,5 +1,5 @@
 import { Component, effect, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { AuthService } from '../../../core/services/auth.service';
 import { GuestService } from '../../../core/services/guest.service';
@@ -14,6 +14,7 @@ import { GuestService } from '../../../core/services/guest.service';
 export class HeaderComponent {
   readonly auth = inject(AuthService);
   private readonly guestService = inject(GuestService);
+  private readonly router = inject(Router);
 
   readonly firstName = signal<string | null>(null);
   menuOpen = false;
@@ -39,5 +40,6 @@ export class HeaderComponent {
   logout(): void {
     this.auth.logout();
     this.closeMenu();
+    this.router.navigateByUrl('/');
   }
 }

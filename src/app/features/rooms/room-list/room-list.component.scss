@@ -213,7 +213,7 @@
 
 @media (max-width: 599px) {
   .room-list {
-    padding: var(--space-lg) 0;
+    padding: var(--space-lg) var(--space-md);
   }
 
   .room-list__heading {

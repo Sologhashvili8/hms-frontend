@@ -141,5 +141,11 @@ h2 {
   .booking-card__price {
     width: 100%;
     text-align: left;
+    align-items: flex-start;
+  }
+
+  .booking-card__dates {
+    flex-direction: column;
+    gap: 2px;
   }
 }

@@ -40,6 +40,11 @@
   gap: var(--space-md);
 }
 
+.nav a,
+.nav__profile {
+  font-size: 16px;
+}
+
 .nav a {
   font-weight: 500;
   color: var(--color-text-muted);
@@ -50,7 +55,6 @@
 }
 
 .nav__profile {
-  font-size: 14px;
   font-weight: 600;
   color: var(--color-text);
 }

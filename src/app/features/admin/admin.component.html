@@ -1,0 +1,183 @@
+<section class="container staff">
+  <header class="staff__head">
+    <div>
+      <h1>Admin panel</h1>
+      <p class="staff__subtitle">Manage hotels and hotel managers.</p>
+    </div>
+  </header>
+
+  <div class="staff__tabs">
+    <button type="button" [class.is-active]="tab() === 'hotels'" (click)="setTab('hotels')">Hotels</button>
+    <button type="button" [class.is-active]="tab() === 'users'" (click)="setTab('users')">Users</button>
+  </div>
+
+  @if (notice()) {
+    <p class="staff__notice">{{ notice() }}</p>
+  }
+  @if (error()) {
+    <p class="staff__error">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="staff__state">Loading…</p>
+  } @else if (tab() === 'hotels') {
+    <div class="staff__toolbar">
+      <button class="btn btn-primary" type="button" (click)="openHotelForm()">Add hotel</button>
+    </div>
+
+    @if (showHotelForm()) {
+      <form class="staff-form" (ngSubmit)="saveHotel()">
+        <h2>New hotel</h2>
+        <div class="staff-form__grid">
+          <label>
+            Name
+            <input type="text" name="name" required maxlength="200" [(ngModel)]="newHotel.name" />
+          </label>
+          <label>
+            Rating (1-5)
+            <input type="number" name="rating" required min="1" max="5" [(ngModel)]="newHotel.rating" />
+          </label>
+          <label>
+            Country
+            <input type="text" name="country" required maxlength="100" [(ngModel)]="newHotel.country" />
+          </label>
+          <label>
+            City
+            <input type="text" name="city" required maxlength="100" [(ngModel)]="newHotel.city" />
+          </label>
+          <label class="staff-form__wide">
+            Address
+            <input type="text" name="address" required maxlength="300" [(ngModel)]="newHotel.address" />
+          </label>
+          <label class="staff-form__wide">
+            Cover image
+            <input type="file" accept="image/*" (change)="uploadHotelImage($event)" />
+          </label>
+        </div>
+
+        @if (uploading()) {
+          <p class="staff__state">Uploading…</p>
+        }
+        @if (newHotel.imageUrl) {
+          <img class="staff-form__preview" [src]="newHotel.imageUrl" alt="Hotel cover" />
+        }
+
+        <div class="staff-form__actions">
+          <button class="btn btn-primary" type="submit" [disabled]="savingHotel() || uploading()">
+            {{ savingHotel() ? 'Saving…' : 'Create hotel' }}
+          </button>
+          <button class="btn btn-outline" type="button" (click)="showHotelForm.set(false)">Cancel</button>
+        </div>
+      </form>
+    }
+
+    <div class="staff-list">
+      @for (hotel of hotels(); track hotel.id) {
+        <article class="staff-card">
+          <div class="staff-card__media">
+            @if (hotel.imageUrl) {
+              <img [src]="hotel.imageUrl" [alt]="hotel.name" />
+            } @else {
+              <span>{{ hotel.name.charAt(0) }}</span>
+            }
+          </div>
+
+          <div class="staff-card__body">
+            <h3>{{ hotel.name }}</h3>
+            <p class="staff-card__meta">{{ hotel.city }}, {{ hotel.country }} · {{ hotel.rating }}★ · {{ hotel.roomsCount }} rooms</p>
+
+            @if (hotel.managerId) {
+              <p class="staff-card__manager">
+                Manager: <strong>{{ hotel.managerName }}</strong> ({{ hotel.managerEmail }})
+              </p>
+            } @else {
+              <p class="staff-card__manager staff-card__manager--empty">No manager assigned</p>
+            }
+          </div>
+
+          <div class="staff-card__actions">
+            @if (hotel.managerId) {
+              <button class="btn btn-outline" type="button" (click)="askUnassign(hotel.id, hotel.name, hotel.managerName)">
+                Remove manager
+              </button>
+            } @else {
+              <div class="staff-inline">
+                <select [name]="'assign-' + hotel.id" [(ngModel)]="assignUser[hotel.id]">
+                  <option [ngValue]="undefined">Choose user…</option>
+                  @for (user of assignableUsers(); track user.id) {
+                    <option [ngValue]="user.id">{{ user.email }}</option>
+                  }
+                </select>
+                <button class="btn btn-primary" type="button" [disabled]="!assignUser[hotel.id]" (click)="assignToHotel(hotel)">
+                  Make manager
+                </button>
+              </div>
+            }
+            <button class="staff__danger" type="button" (click)="askDeleteHotel(hotel)">Delete hotel</button>
+          </div>
+        </article>
+      } @empty {
+        <p class="staff__state">No hotels yet.</p>
+      }
+    </div>
+  } @else {
+    <div class="staff-list">
+      @for (user of users(); track user.id) {
+        <article class="staff-card staff-card--compact">
+          <div class="staff-card__body">
+            <h3>{{ user.firstName || user.lastName ? user.firstName + ' ' + user.lastName : user.email }}</h3>
+            <p class="staff-card__meta">{{ user.email }}@if (user.phoneNumber) { · {{ user.phoneNumber }} }</p>
+            <p class="staff-card__roles">
+              @for (role of user.roles; track role) {
+                <span class="staff-chip" [class.staff-chip--accent]="role !== 'Guest'">{{ role }}</span>
+              }
+              @if (user.managedHotelName) {
+                <span class="staff-card__meta">manages {{ user.managedHotelName }}</span>
+              }
+            </p>
+          </div>
+
+          <div class="staff-card__actions">
+            @if (user.managedHotelId !== null) {
+              <button
+                class="btn btn-outline"
+                type="button"
+                (click)="askUnassign(user.managedHotelId, user.managedHotelName ?? 'the hotel', user.firstName + ' ' + user.lastName)"
+              >
+                Remove manager role
+              </button>
+            } @else if (!hasRole(user, 'Admin')) {
+              <div class="staff-inline">
+                <select [name]="'hotel-' + user.id" [(ngModel)]="assignHotel[user.id]">
+                  <option [ngValue]="undefined">Choose hotel…</option>
+                  @for (hotel of freeHotels(); track hotel.id) {
+                    <option [ngValue]="hotel.id">{{ hotel.name }}</option>
+                  }
+                </select>
+                <button class="btn btn-primary" type="button" [disabled]="!assignHotel[user.id]" (click)="assignFromUser(user)">
+                  Make manager
+                </button>
+              </div>
+            }
+            @if (!hasRole(user, 'Admin')) {
+              <button class="staff__danger" type="button" (click)="askDeleteUser(user)">Delete user</button>
+            }
+          </div>
+        </article>
+      } @empty {
+        <p class="staff__state">No users yet.</p>
+      }
+    </div>
+  }
+</section>
+
+@if (pending(); as action) {
+  <app-confirm-dialog
+    [title]="action.title"
+    [message]="action.message"
+    [confirmLabel]="action.confirmLabel"
+    [danger]="true"
+    (confirmed)="confirmPending()"
+    (dismissed)="pending.set(null)"
+  />
+}

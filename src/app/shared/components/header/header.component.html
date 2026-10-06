@@ -16,6 +16,12 @@
       <a routerLink="/rooms" routerLinkActive="is-active" (click)="closeMenu()">Rooms</a>
 
       @if (auth.isLoggedIn()) {
+        @if (auth.isAdmin()) {
+          <a routerLink="/admin" routerLinkActive="is-active" (click)="closeMenu()">Admin</a>
+        }
+        @if (auth.isManager()) {
+          <a routerLink="/manager" routerLinkActive="is-active" (click)="closeMenu()">Management</a>
+        }
         @if (auth.isGuest()) {
           <a
             routerLink="/account"

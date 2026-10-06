@@ -33,7 +33,7 @@
     />
   </label>
 
-  <button class="btn" type="button" [disabled]="sending()" (click)="sendCode()">
+  <button class="btn btn-primary" type="button" [disabled]="sending()" (click)="sendCode()">
     {{ sending() ? 'Sending…' : 'Send code to my email' }}
   </button>
 

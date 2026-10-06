@@ -1,5 +1,6 @@
 import type { Routes } from '@angular/router';
 
+import { adminGuard, managerGuard } from './core/guards/role.guard';
 import { guestGuard } from './core/guards/guest.guard';
 
 export const routes: Routes = [
@@ -77,6 +78,16 @@ export const routes: Routes = [
           import('./features/account/settings/settings.component').then((m) => m.SettingsComponent)
       }
     ]
+  },
+  {
+    path: 'admin',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./features/admin/admin.component').then((m) => m.AdminComponent)
+  },
+  {
+    path: 'manager',
+    canActivate: [managerGuard],
+    loadComponent: () => import('./features/manager/manager.component').then((m) => m.ManagerComponent)
   },
   { path: '**', redirectTo: '' }
 ];

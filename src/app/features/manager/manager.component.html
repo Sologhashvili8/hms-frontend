@@ -1,0 +1,275 @@
+<section class="container staff">
+  <header class="staff__head">
+    <div>
+      <h1>{{ profile()?.hotelName || 'Manager panel' }}</h1>
+      <p class="staff__subtitle">Manage rooms, prices and reservations of your hotel.</p>
+    </div>
+  </header>
+
+  @if (notice()) {
+    <p class="staff__notice">{{ notice() }}</p>
+  }
+  @if (error()) {
+    <p class="staff__error">{{ error() }}</p>
+  }
+
+  @if (profile()) {
+    <div class="staff__tabs">
+      <button type="button" [class.is-active]="tab() === 'rooms'" (click)="setTab('rooms')">Rooms</button>
+      <button type="button" [class.is-active]="tab() === 'reservations'" (click)="setTab('reservations')">Reservations</button>
+    </div>
+
+    @if (loading()) {
+      <p class="staff__state">Loading…</p>
+    } @else if (tab() === 'rooms') {
+      <div class="staff__toolbar">
+        <button class="btn btn-primary" type="button" (click)="openNewRoom()">Add room</button>
+      </div>
+
+      @if (roomForm(); as form) {
+        <form class="staff-form" (ngSubmit)="saveRoom()">
+          <h2>{{ form.id === null ? 'New room' : 'Edit room' }}</h2>
+
+          <div class="staff-form__grid">
+            <label class="staff-form__wide">
+              Name
+              <input type="text" name="name" required maxlength="100" [(ngModel)]="form.name" />
+            </label>
+            <label>
+              Price per night ($)
+              <input type="number" name="price" required min="0.01" step="0.01" [(ngModel)]="form.price" />
+            </label>
+            <label>
+              Capacity (guests)
+              <input type="number" name="capacity" required min="1" step="1" [(ngModel)]="form.capacity" />
+            </label>
+          </div>
+
+          <div class="staff-form__group">
+            <span class="staff-form__label">Amenities</span>
+            <div class="staff-form__checks">
+              @for (amenity of amenities(); track amenity.id) {
+                <label class="staff-check">
+                  <input
+                    type="checkbox"
+                    [checked]="form.amenityIds.includes(amenity.id)"
+                    (change)="toggleAmenity(amenity.id)"
+                  />
+                  {{ amenity.name }}
+                </label>
+              }
+            </div>
+          </div>
+
+          <div class="staff-form__group">
+            <span class="staff-form__label">Photos (minimum {{ minPhotos }}) · {{ form.photoUrls.length }} added</span>
+            <input type="file" accept="image/*" multiple (change)="uploadPhotos($event)" />
+            @if (uploading()) {
+              <p class="staff__state">Uploading…</p>
+            }
+            <div class="staff-photos">
+              @for (url of form.photoUrls; track url; let i = $index) {
+                <div class="staff-photos__item">
+                  <img [src]="url" alt="Room photo" />
+                  <button type="button" (click)="removePhoto(i)" aria-label="Remove photo">×</button>
+                </div>
+              }
+            </div>
+            @if (form.photoUrls.length < minPhotos) {
+              <p class="staff-form__hint">Upload at least {{ minPhotos - form.photoUrls.length }} more photo(s) to save the room.</p>
+            }
+          </div>
+
+          <div class="staff-form__actions">
+            <button class="btn btn-primary" type="submit" [disabled]="savingRoom() || uploading() || form.photoUrls.length < minPhotos">
+              {{ savingRoom() ? 'Saving…' : 'Save room' }}
+            </button>
+            <button class="btn btn-outline" type="button" (click)="closeRoomForm()">Cancel</button>
+          </div>
+        </form>
+      }
+
+      <div class="staff-list">
+        @for (room of rooms(); track room.id) {
+          <article class="staff-card">
+            <div class="staff-card__media">
+              @if (room.photoUrls.length > 0) {
+                <img [src]="room.photoUrls[0]" [alt]="room.name" />
+              } @else {
+                <span>{{ room.name.charAt(0) }}</span>
+              }
+            </div>
+
+            <div class="staff-card__body">
+              <h3>{{ room.name }}</h3>
+              <p class="staff-card__meta">Up to {{ room.capacity }} guests · {{ room.photoUrls.length }} photos</p>
+              @if (room.amenities.length > 0) {
+                <p class="staff-card__roles">
+                  @for (amenity of room.amenities; track amenity) {
+                    <span class="staff-chip">{{ amenity }}</span>
+                  }
+                </p>
+              }
+            </div>
+
+            <div class="staff-card__actions">
+              <div class="staff-inline">
+                <span class="staff-inline__prefix">$</span>
+                <input
+                  class="staff-inline__price"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  [name]="'price-' + room.id"
+                  [(ngModel)]="priceDrafts[room.id]"
+                />
+                <button class="btn btn-primary" type="button" [disabled]="!priceChanged(room)" (click)="savePrice(room)">
+                  Save price
+                </button>
+              </div>
+              <div class="staff-inline">
+                <button class="btn btn-outline" type="button" (click)="openEditRoom(room)">Edit</button>
+                <button class="staff__danger" type="button" (click)="askDeleteRoom(room)">Delete</button>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <p class="staff__state">No rooms yet. Add the first one.</p>
+        }
+      </div>
+    } @else {
+      <div class="staff__toolbar">
+        <button class="btn btn-primary" type="button" (click)="openBookingForm()">New reservation</button>
+      </div>
+
+      @if (showBookingForm()) {
+        <form class="staff-form" (ngSubmit)="saveBooking()">
+          <h2>Book for a guest</h2>
+
+          <div class="staff-form__grid">
+            <label>
+              First name
+              <input type="text" name="firstName" required maxlength="100" [(ngModel)]="booking.firstName" />
+            </label>
+            <label>
+              Last name
+              <input type="text" name="lastName" required maxlength="100" [(ngModel)]="booking.lastName" />
+            </label>
+            <label>
+              Personal number
+              <input
+                type="text"
+                name="personalNumber"
+                required
+                inputmode="numeric"
+                maxlength="11"
+                pattern="\d{11}"
+                title="11 digits"
+                [(ngModel)]="booking.personalNumber"
+              />
+            </label>
+            <label>
+              Phone number
+              <input
+                type="text"
+                name="phoneNumber"
+                required
+                inputmode="numeric"
+                maxlength="9"
+                pattern="5\d{8}"
+                title="Starts with 5, 9 digits"
+                placeholder="5XXXXXXXX"
+                [(ngModel)]="booking.phoneNumber"
+              />
+            </label>
+            <label>
+              Check-in
+              <input
+                type="date"
+                name="checkIn"
+                required
+                [min]="today"
+                [(ngModel)]="booking.checkInDate"
+                (ngModelChange)="datesChanged()"
+              />
+            </label>
+            <label>
+              Check-out
+              <input
+                type="date"
+                name="checkOut"
+                required
+                [min]="booking.checkInDate || today"
+                [(ngModel)]="booking.checkOutDate"
+                (ngModelChange)="datesChanged()"
+              />
+            </label>
+          </div>
+
+          <div class="staff-form__group">
+            <span class="staff-form__label">Available rooms</span>
+            @if (!booking.checkInDate || !booking.checkOutDate) {
+              <p class="staff__state">Choose the dates to see available rooms.</p>
+            } @else if (availableRooms().length === 0) {
+              <p class="staff__state">No rooms available for these dates.</p>
+            } @else {
+              <div class="staff-form__checks">
+                @for (room of availableRooms(); track room.id) {
+                  <label class="staff-check">
+                    <input
+                      type="checkbox"
+                      [checked]="booking.roomIds.includes(room.id)"
+                      (change)="toggleBookingRoom(room.id)"
+                    />
+                    {{ room.name }} · ${{ room.price }}/night
+                  </label>
+                }
+              </div>
+              @if (booking.roomIds.length > 0) {
+                <p class="staff__total">Total: ${{ bookingTotal() }}</p>
+              }
+            }
+          </div>
+
+          <div class="staff-form__actions">
+            <button class="btn btn-primary" type="submit" [disabled]="savingBooking()">
+              {{ savingBooking() ? 'Saving…' : 'Create reservation' }}
+            </button>
+            <button class="btn btn-outline" type="button" (click)="showBookingForm.set(false)">Cancel</button>
+          </div>
+        </form>
+      }
+
+      <div class="staff-list">
+        @for (reservation of reservations(); track reservation.id) {
+          <article class="staff-card staff-card--compact">
+            <div class="staff-card__body">
+              <h3>{{ reservation.guestName }}</h3>
+              <p class="staff-card__meta">{{ reservation.guestPhone }} · ID {{ reservation.guestPersonalNumber }}</p>
+              <p class="staff-card__meta">
+                {{ reservation.checkInDate }} → {{ reservation.checkOutDate }} · {{ reservation.nights }} nights · {{ reservation.roomNames.join(', ') }}
+              </p>
+            </div>
+            <div class="staff-card__actions">
+              <p class="staff__total">${{ reservation.totalPrice }}</p>
+              <button class="staff__danger" type="button" (click)="askCancelReservation(reservation)">Cancel</button>
+            </div>
+          </article>
+        } @empty {
+          <p class="staff__state">No reservations yet.</p>
+        }
+      </div>
+    }
+  }
+</section>
+
+@if (pending(); as action) {
+  <app-confirm-dialog
+    [title]="action.title"
+    [message]="action.message"
+    [confirmLabel]="action.confirmLabel"
+    [danger]="true"
+    (confirmed)="confirmPending()"
+    (dismissed)="pending.set(null)"
+  />
+}
